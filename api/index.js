@@ -2,12 +2,13 @@
 import express from 'express';
 import dotenv from 'dotenv'
 import  mongoose  from 'mongoose';
+import multer from 'multer';
 
-
-import authRoutes from './routes/auth.route.js'
+//import authRoutes from './routes/auth.route.js'
 
 
 import cookieParser from 'cookie-parser'
+import { signup } from './controllers/auth.controller.js';
 
 dotenv.config();
 const app= express();
@@ -30,8 +31,27 @@ app.listen(3000,()=>{
 app.use(express.json())
 app.use(cookieParser())
 
+
+//Multer
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, 'uploads/'); // Uploads will be stored in 'uploads/' directory
+    },
+    filename: function(req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname);
+    }
+  });
+  const upload = multer({ storage: storage });
+
+
+
+
+//Endpoints with files
+app.post('/api/auth/signup' , upload.single('photoURL'), signup)
+
+
 //EndPoints
-app.use('/api/auth', authRoutes)
+//app.use('/api/auth', authRoutes)
 
 
 
