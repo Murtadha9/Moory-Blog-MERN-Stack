@@ -7,10 +7,12 @@ import SignUp from './Pages/SignUp/SignUp'
 import SignIn from './Pages/SignIn/SignIn'
 import Projects from './Pages/Projects/Projects'
 import DashBoard from './Pages/DashBoard/DashBoard'
+import Headers from './Components/Headers/Headers'
 
 const App = () => {
   return (
     <BrowserRouter >
+    <Headers/>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
