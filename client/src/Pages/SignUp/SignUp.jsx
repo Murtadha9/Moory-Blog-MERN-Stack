@@ -1,11 +1,12 @@
 
-import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
-import React, { useState } from 'react';
+import { Alert, Button, Label, Spinner, TextInput  } from 'flowbite-react';
+import React, { useRef, useState } from 'react';
 import { Link ,useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
 
   const navigate=useNavigate();
+  const filePicker=useRef()
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -79,9 +80,10 @@ const SignUp = () => {
         {/*right*/}
         <div className='flex-1'>
           <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+           
             <div>
-              <Label value='Profile Picture' />
-              <TextInput type='file' id='photoURL' onChange={handleFileChange} />
+              <img src="" alt="" onClick={()=>filePicker.current.click()}/>
+              <input type='file' id='photoURL' onChange={handleFileChange} ref={filePicker}  />
             </div>
             <div>
               <Label value='Username' />

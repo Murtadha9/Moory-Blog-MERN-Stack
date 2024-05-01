@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import  mongoose  from 'mongoose';
 import multer from 'multer';
 
-//import authRoutes from './routes/auth.route.js'
+import authRoutes from './routes/auth.route.js'
 
 
 import cookieParser from 'cookie-parser'
@@ -51,7 +51,7 @@ app.post('/api/auth/signup' , upload.single('photoURL'), signup)
 
 
 //EndPoints
-//app.use('/api/auth', authRoutes)
+app.use('/api/auth', authRoutes)
 
 
 
