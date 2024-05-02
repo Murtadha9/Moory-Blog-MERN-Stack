@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { Link ,useNavigate } from 'react-router-dom';
 import { signInStart ,SignoutSuccess ,signInFailure } from '../../redux/user/userSlice';
 import {useDispatch ,useSelector} from 'react-redux'
+import AOuth from '../../Components/AOuth/AOuth';
 
 
 const SignIn = () => {
@@ -24,7 +25,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if( !formData.email ||!formData.password ){
-      return dispatch(signInFailure('please all fileds are required'));
+      return dispatch(signInFailure('Please fill all the fields'));
     }
     
     try {
@@ -93,6 +94,7 @@ const SignIn = () => {
              </>
              ): 'Sign In'} 
             </Button>
+            <AOuth/>
           </form>
           <div className='flex gap-2 mt-5'>
             <span>Don't have an Account?</span>
@@ -100,6 +102,7 @@ const SignIn = () => {
               Sign up
             </Link>
           </div>
+          
           {
             errorMessage && (
               <Alert className='mt-5' color={'failure'}>{errorMessage}</Alert>
