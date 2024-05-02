@@ -2,15 +2,19 @@
 import { Alert, Button, Label, Spinner, TextInput  } from 'flowbite-react';
 import React, { useRef, useState } from 'react';
 import { Link ,useNavigate } from 'react-router-dom';
+import { signInStart ,SignoutSuccess ,signInFailure } from '../../redux/user/userSlice';
+import {useDispatch ,useSelector} from 'react-redux'
+
 
 const SignIn = () => {
 
   const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const { loading, error: errorMessage } = useSelector((state) => state.user || {});
   const filePicker=useRef()
   const [formData, setFormData] = useState({});
 
-  const [errorMessage,setErrorMessage] = useState(null);
-  const [loading,setLoading] = useState(false);
+ 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -20,12 +24,11 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if( !formData.email ||!formData.password ){
-      return setErrorMessage('all fileds are required');
+      return dispatch(signInFailure('please all fileds are required'));
     }
     
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart())
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -37,16 +40,18 @@ const SignIn = () => {
       const data = await res.json();
       console.log(data);
       if(data.success === false) {
-        return setErrorMessage(data.message);
-       
+        dispatch(signInFailure((data.message)));
       }
-      setLoading(false)
-      if(res.ok)(
+   
+
+      if(res.ok){
+        dispatch(SignoutSuccess(data))
         navigate('/')
-      )
+      }
+        
+     
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      dispatch(signInFailure((error.message)));
     }
   };
 
@@ -56,7 +61,7 @@ const SignIn = () => {
         {/*left*/}
         <div className='flex-1'>
           <Link to={'/'} className='font-bold text-4xl  dark:text-white'>
-            <span className='px-2 py-1 bg-gradient-to-r from-red-300 to-yellow-200 rounded-lg text-black'>
+            <span className='px-2 py-1 bg-gradient-to-r from-red-200 via-red-400 to-yellow-200 rounded-lg text-black'>
               Moory
             </span>
             Blog
