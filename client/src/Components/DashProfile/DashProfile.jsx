@@ -1,11 +1,12 @@
-import { Alert, Button, TextInput } from 'flowbite-react'
+import { Alert, Button, Modal, ModalBody, ModalHeader, TextInput } from 'flowbite-react'
 import React, { useRef, useState } from 'react'
 import {useSelector ,useDispatch} from 'react-redux'
-import {updateStart ,updateSuccess ,updateFailure} from '../../redux/user/userSlice'
+import {updateStart ,updateSuccess ,updateFailure , deleteUserStart ,deleteUserSuccess,deleteUserFailure} from '../../redux/user/userSlice'
+import { IoWarningOutline } from "react-icons/io5";
 
 const DashProfile = () => {
 
-    const {currentUser} = useSelector((state) => state.user)
+    const {currentUser ,error} = useSelector((state) => state.user)
     const [imageFile ,setImageFile]=useState(null)
     const [imageFileURL,setImageFileURL]=useState(null)
     const filePick=useRef()
@@ -13,6 +14,7 @@ const DashProfile = () => {
     const dispatch=useDispatch()
     const [updateUserSuccess ,setUpdateUserSuccess]=useState(null)
     const [updateUserError ,setUpdateUserError]=useState(null)
+    const [showModal,setShowModal]=useState(false)
 
 
     
@@ -66,6 +68,27 @@ const DashProfile = () => {
     
   }
 
+  const handelDeleteUser=async(e)=>{
+    e.preventDefault()
+    setShowModal(false);
+   try {
+    dispatch(deleteUserStart());
+    const res=await fetch(`/api/users/delete/${currentUser._id}`,{
+      method:'DELETE',
+    })
+    const data=await res.json();
+    if(!res.ok){
+      dispatch(deleteUserFailure(data.message));
+    }else{
+      dispatch(deleteUserSuccess(data));
+      
+    }
+    
+   } catch (error) {
+    dispatch(deleteUserFailure(error.message));
+   }
+  }
+
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center'>Profile</h1>
@@ -80,7 +103,7 @@ const DashProfile = () => {
         <Button type='submit' gradientDuoTone={'redToYellow'} outline >Update</Button>
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
-        <span className=' cursor-pointer'>Delete account</span>
+        <span className=' cursor-pointer' onClick={()=>setShowModal(true)}>Delete account</span>
         <span className=' cursor-pointer'>Signout</span>
       </div>
       {updateUserSuccess  && 
@@ -88,6 +111,21 @@ const DashProfile = () => {
       }
       {updateUserError &&
       <Alert className='mt-5' color={'failure'}>{updateUserError}</Alert>}
+      {error &&
+      <Alert className='mt-5' color={'failure'}>{error}</Alert>}
+      <Modal show={showModal} onClose={()=>setShowModal(false)} popup size={'md'}>
+        <ModalHeader/>
+        <ModalBody>
+          <div className=' text-center'>
+            <IoWarningOutline className='w-14 h-14 mb-5 mx-auto'/>
+            <h3 className='font-bold text-red-700'>are you sure to delete the account ?</h3>
+            <div className='flex gap-3 items-center justify-center mt-5'>
+              <Button className='flex-1' color={'failure'} onClick={handelDeleteUser}>Yes,I am Sure</Button>
+              <Button className='flex-1' onClick={()=>setShowModal(false)} gradientDuoTone={'redToYellow'}>Cancel</Button>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
     </div>
     
   )

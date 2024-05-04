@@ -5,7 +5,7 @@ import  mongoose  from 'mongoose';
 import multer from 'multer';
 
 import authRoutes from './routes/auth.route.js'
-
+import userRoutes from './routes/user.route.js'
 
 import cookieParser from 'cookie-parser'
 import { signup } from './controllers/auth.controller.js';
@@ -55,7 +55,7 @@ app.put('/api/users/update/:userId', upload.single('photoURL') , verifyToken , u
 
 //EndPoints
 app.use('/api/auth', authRoutes)
-
+app.use('/api/users', userRoutes)
 
 
 
