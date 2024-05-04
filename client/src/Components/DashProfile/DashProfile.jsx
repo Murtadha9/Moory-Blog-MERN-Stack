@@ -1,8 +1,9 @@
 import { Alert, Button, Modal, ModalBody, ModalHeader, TextInput } from 'flowbite-react'
 import React, { useRef, useState } from 'react'
 import {useSelector ,useDispatch} from 'react-redux'
-import {updateStart ,updateSuccess ,updateFailure , deleteUserStart ,deleteUserSuccess,deleteUserFailure} from '../../redux/user/userSlice'
+import {updateStart ,updateSuccess ,updateFailure , deleteUserStart ,deleteUserSuccess,deleteUserFailure , SignoutSuccess} from '../../redux/user/userSlice'
 import { IoWarningOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 
 const DashProfile = () => {
 
@@ -15,6 +16,7 @@ const DashProfile = () => {
     const [updateUserSuccess ,setUpdateUserSuccess]=useState(null)
     const [updateUserError ,setUpdateUserError]=useState(null)
     const [showModal,setShowModal]=useState(false)
+    const navigate=useNavigate();
 
 
     
@@ -42,7 +44,7 @@ const DashProfile = () => {
     setUpdateUserError(null)
     setUpdateUserSuccess(null)
     if(Object.keys(formData).length ===0){
-      setUpdateUserError('Please fill the fields')
+      setUpdateUserError('nothings changed')
       return;
     }
     try {
@@ -89,6 +91,23 @@ const DashProfile = () => {
    }
   }
 
+  const handleSignout = async () => {
+    try {
+      const res = await fetch('/api/users/signout', {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(SignoutSuccess());
+        navigate('/signin')
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center'>Profile</h1>
@@ -104,7 +123,7 @@ const DashProfile = () => {
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
         <span className=' cursor-pointer' onClick={()=>setShowModal(true)}>Delete account</span>
-        <span className=' cursor-pointer'>Signout</span>
+        <span className=' cursor-pointer' onClick={handleSignout} >Signout</span>
       </div>
       {updateUserSuccess  && 
       <Alert className='mt-5' color={'success'}>{updateUserSuccess}</Alert>

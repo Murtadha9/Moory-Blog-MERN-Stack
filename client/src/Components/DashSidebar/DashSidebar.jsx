@@ -4,11 +4,16 @@ import {Sidebar, SidebarItem, SidebarItemGroup, SidebarItems} from 'flowbite-rea
 import { HiUser } from "react-icons/hi";
 import { VscSignOut } from "react-icons/vsc";
 import { Link, useLocation } from 'react-router-dom';
+import { SignoutSuccess } from '../../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 const DashSidebar = () => {
 
     const location=useLocation();
     const [tab,setTab]=useState('')
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
 
   useEffect(()=>{
     const urlParams = new URLSearchParams(location.search)
@@ -18,6 +23,23 @@ const DashSidebar = () => {
     }
   },[location.search])
 
+  const handleSignout = async () => {
+    try {
+      const res = await fetch('/api/users/signout', {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(SignoutSuccess());
+        navigate('/signin')
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
 
   return (
     <Sidebar className='w-full md:w-56'>
@@ -25,7 +47,7 @@ const DashSidebar = () => {
         <SidebarItemGroup>
             <Link to={'/dashboard?tab=profile'}>
             <SidebarItem active={tab === 'profile'} icon={HiUser} label={'user'} as={'div'}>Profile</SidebarItem></Link>
-            <SidebarItem  icon={VscSignOut} >Signout</SidebarItem>
+            <SidebarItem  icon={VscSignOut} onClick={handleSignout} >Signout</SidebarItem>
         </SidebarItemGroup>
       </SidebarItems>
     </Sidebar>
