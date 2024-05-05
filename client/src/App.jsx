@@ -12,6 +12,7 @@ import FooterCom from './Components/Footer/Footer'
 import PrivateRoute from './Components/PrivateRoute/PrivateRoute'
 import OnlyAdminPrivateRoute from './Components/OnlyAdminPrivateRoute/OnlyAdminPrivateRoute'
 import CreatePost from './Pages/CreatePost/CreatePost'
+import UpdatedPost from './Pages/UpdatePost/UpdatePost'
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
         </Route>
         <Route element={<OnlyAdminPrivateRoute/>}>
           <Route path='/createpost' element={<CreatePost />} />
+          <Route path='/updatepost/:postId' element={<UpdatedPost />} />
         </Route>
         
         <Route path='/projects' element={<Projects />} />
