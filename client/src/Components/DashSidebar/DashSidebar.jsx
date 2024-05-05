@@ -7,6 +7,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { SignoutSuccess } from '../../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { BsPostcard } from "react-icons/bs";
+import {useSelector} from 'react-redux';
 
 const DashSidebar = () => {
 
@@ -14,6 +16,7 @@ const DashSidebar = () => {
     const [tab,setTab]=useState('')
     const dispatch=useDispatch();
     const navigate=useNavigate();
+    const {currentUser}=useSelector((state)=>state.user)
 
   useEffect(()=>{
     const urlParams = new URLSearchParams(location.search)
@@ -44,9 +47,15 @@ const DashSidebar = () => {
   return (
     <Sidebar className='w-full md:w-56'>
       <SidebarItems>
-        <SidebarItemGroup>
+        <SidebarItemGroup className='flex flex-col gap-2'>
             <Link to={'/dashboard?tab=profile'}>
-            <SidebarItem active={tab === 'profile'} icon={HiUser} label={'user'} as={'div'}>Profile</SidebarItem></Link>
+            <SidebarItem active={tab === 'profile'} icon={HiUser} label={currentUser.isAdmin?'Admin':'User'} as={'div'}>Profile</SidebarItem>
+            </Link>
+            {currentUser.isAdmin &&
+            <Link to={'/dashboard?tab=posts'}>
+               <SidebarItem active={tab === 'posts'} icon={BsPostcard} as={'div'}>Posts</SidebarItem>
+            </Link>
+            }
             <SidebarItem  icon={VscSignOut} onClick={handleSignout} >Signout</SidebarItem>
         </SidebarItemGroup>
       </SidebarItems>

@@ -6,11 +6,13 @@ import multer from 'multer';
 
 import authRoutes from './routes/auth.route.js'
 import userRoutes from './routes/user.route.js'
+import postRoutes from './routes/post.route.js'
 
 import cookieParser from 'cookie-parser'
 import { signup } from './controllers/auth.controller.js';
 import { verifyToken } from './utils/verifyUser.js';
 import { updateUser } from './controllers/user.controller.js';
+import { create } from './controllers/post.controllers.js';
 
 dotenv.config();
 const app= express();
@@ -51,12 +53,13 @@ const storage = multer.diskStorage({
 //Endpoints with files
 app.post('/api/auth/signup' , upload.single('photoURL'), signup)
 app.put('/api/users/update/:userId', upload.single('photoURL') , verifyToken , updateUser)
+app.post('/api/posts/create', upload.single('photoURL') , verifyToken ,create)
 
 
 //EndPoints
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
-
+app.use('/api/posts', postRoutes)
 
 
 //MiddleWare

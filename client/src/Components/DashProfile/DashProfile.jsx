@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import {useSelector ,useDispatch} from 'react-redux'
 import {updateStart ,updateSuccess ,updateFailure , deleteUserStart ,deleteUserSuccess,deleteUserFailure , SignoutSuccess} from '../../redux/user/userSlice'
 import { IoWarningOutline } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const DashProfile = () => {
 
@@ -120,6 +120,11 @@ const DashProfile = () => {
         <TextInput type='email' id='email' defaultValue={currentUser.email} onChange={handleChange}/>
         <TextInput type='password' id='password' placeholder='password' onChange={handleChange}/>
         <Button type='submit' gradientDuoTone={'redToYellow'} outline >Update</Button>
+        {currentUser.isAdmin && (
+          <Link to={'/createpost'}>
+            <Button type='button' gradientDuoTone={'redToYellow'} className='w-full'>Create a Post</Button>
+          </Link>
+        )}
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
         <span className=' cursor-pointer' onClick={()=>setShowModal(true)}>Delete account</span>
