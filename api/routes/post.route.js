@@ -6,7 +6,7 @@ import { getPosts } from '../controllers/post.controllers.js';
 
 const router=express.Router();
 
-router.get('/getpost' , getPosts)
+router.get('/getposts' , getPosts)
 
 
 
