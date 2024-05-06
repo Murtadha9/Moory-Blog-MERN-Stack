@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { BsPostcard } from "react-icons/bs";
 import {useSelector} from 'react-redux';
+import { MdGroups2 } from "react-icons/md";
 
 const DashSidebar = () => {
 
@@ -54,6 +55,11 @@ const DashSidebar = () => {
             {currentUser.isAdmin &&
             <Link to={'/dashboard?tab=posts'}>
                <SidebarItem active={tab === 'posts'} icon={BsPostcard} as={'div'}>Posts</SidebarItem>
+            </Link>
+            }
+            {currentUser.isAdmin &&
+            <Link to={'/dashboard?tab=users'}>
+               <SidebarItem active={tab === 'users'} icon={MdGroups2} as={'div'}>Users</SidebarItem>
             </Link>
             }
             <SidebarItem  icon={VscSignOut} onClick={handleSignout} >Signout</SidebarItem>

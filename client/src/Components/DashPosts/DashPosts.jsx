@@ -90,7 +90,7 @@ const DashPosts = () => {
             <TableHeadCell><span>Edit</span></TableHeadCell>
           </TableHead>
           {userPosts.map((post)=>(
-            <TableBody className='divide-y'>
+            <TableBody className='divide-y' key={post._id}>
               <TableRow className='bg-white dark:bg-gray-900 dark:border-gray-700'>
                 <TableCell>{new Date(post.updatedAt).toLocaleString()}</TableCell>
                 <TableCell>

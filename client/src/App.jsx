@@ -13,6 +13,7 @@ import PrivateRoute from './Components/PrivateRoute/PrivateRoute'
 import OnlyAdminPrivateRoute from './Components/OnlyAdminPrivateRoute/OnlyAdminPrivateRoute'
 import CreatePost from './Pages/CreatePost/CreatePost'
 import UpdatedPost from './Pages/UpdatePost/UpdatePost'
+import PostPage from './Pages/PostPage/PostPage'
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
         </Route>
         
         <Route path='/projects' element={<Projects />} />
+        <Route path='/post/:postSlug' element={<PostPage />} />
       </Routes>
       <FooterCom/>
     </BrowserRouter>
