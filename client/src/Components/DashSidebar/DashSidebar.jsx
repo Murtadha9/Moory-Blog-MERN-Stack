@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux';
 import { BsPostcard } from "react-icons/bs";
 import {useSelector} from 'react-redux';
 import { MdGroups2 } from "react-icons/md";
+import { LiaCommentsSolid } from "react-icons/lia";
+import { RiDashboardLine } from "react-icons/ri";
 
 const DashSidebar = () => {
 
@@ -49,6 +51,11 @@ const DashSidebar = () => {
     <Sidebar className='w-full md:w-56'>
       <SidebarItems>
         <SidebarItemGroup className='flex flex-col gap-2'>
+        {currentUser.isAdmin &&
+            <Link to={'/dashboard?tab=dashboard'}>
+               <SidebarItem active={tab === 'dashboard'} icon={RiDashboardLine} as={'div'}>DashBoard</SidebarItem>
+            </Link>
+            }
             <Link to={'/dashboard?tab=profile'}>
             <SidebarItem active={tab === 'profile'} icon={HiUser} label={currentUser.isAdmin?'Admin':'User'} as={'div'}>Profile</SidebarItem>
             </Link>
@@ -58,9 +65,21 @@ const DashSidebar = () => {
             </Link>
             }
             {currentUser.isAdmin &&
+              <>
             <Link to={'/dashboard?tab=users'}>
                <SidebarItem active={tab === 'users'} icon={MdGroups2} as={'div'}>Users</SidebarItem>
             </Link>
+      
+            <Link to='/dashboard?tab=comments'>
+              <Sidebar.Item
+                active={tab === 'comments'}
+                icon={LiaCommentsSolid}
+                as='div'
+              >
+                Comments
+              </Sidebar.Item>
+            </Link>
+            </>
             }
             <SidebarItem  icon={VscSignOut} onClick={handleSignout} >Signout</SidebarItem>
         </SidebarItemGroup>
