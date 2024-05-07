@@ -61,7 +61,9 @@ app.post('/api/posts/create', upload.single('photoURL') , verifyToken ,create)
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/posts', postRoutes)
-app.use('/api/comment', commentRoutes)
+app.use('/api/comment', commentRoutes);
+
+
 
 //MiddleWare
 app.use((err, req, res, next) => {

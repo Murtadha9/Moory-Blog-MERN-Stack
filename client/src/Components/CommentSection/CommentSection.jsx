@@ -1,16 +1,25 @@
 
-import { Button, TextInput, Textarea } from 'flowbite-react';
+import { Alert, Button, TextInput, Textarea } from 'flowbite-react';
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CommentSection = ({postId}) => {
     const { currentUser } = useSelector((state) => state.user);
     const [comment, setComment] = useState('');
+    const [commentError, setCommentError] = useState(null);
+    const [comments, setComments] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-  
+      if (comment.length > 200) {
+        return;
+      }
+     
+      
       try {
         const response = await fetch('/api/comment/create', {
           method: 'POST',
@@ -19,18 +28,24 @@ const CommentSection = ({postId}) => {
           },
           body: JSON.stringify({
             content: comment,
-            postId,
-            userId: currentUser._id,
+            postId: postId,
+            userId: currentUser._id, // Assuming currentUser._id is defined
           }),
         });
-        const data = await response.json();
-        if (response.ok) {
-          setComment('');
-         
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Failed to create comment:', errorData.message);
+        } else {
+          console.log('Comment created successfully');
+          setComment(''); 
+          setCommentError(null)
         }
       } catch (error) {
-        console.log(error);
+        setCommentError('Error creating comment:', error);
+     
       }
+      
     };
   
 
@@ -51,12 +66,15 @@ const CommentSection = ({postId}) => {
 
       {currentUser && (
         <form onSubmit={handleSubmit} className='border border-red-400 p-5 rounded-br-2xl rounded-tl-2xl'>
-            <Textarea  onChange={(e) => setComment(e.target.value)}
-            value={comment} placeholder='Add a comment' rows={'3'} maxLength={'200'}/>
+            <Textarea  
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+             placeholder='Add a comment' rows={'3'} maxLength={'200'}/>
             <div className='flex items-center justify-between mt-6'>
                 <p>{200 - comment.length} characters remaining</p>
                 <Button type='submit' gradientDuoTone={'redToYellow'}>comment</Button>
             </div>
+            {commentError && <Alert color={'failure'} className='mt-5'>{commentError}</Alert>}
         </form>
       )}
     </div>
