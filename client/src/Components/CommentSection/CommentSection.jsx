@@ -1,8 +1,10 @@
 
-import { Alert, Button, TextInput, Textarea } from 'flowbite-react';
-import React, { useState } from 'react'
+import { Alert, Button, Modal, ModalBody, ModalHeader, TextInput, Textarea } from 'flowbite-react';
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import Comment from '../Comment/Comment';
+import { IoWarningOutline } from "react-icons/io5";
 
 const CommentSection = ({postId}) => {
     const { currentUser } = useSelector((state) => state.user);
@@ -18,37 +20,100 @@ const CommentSection = ({postId}) => {
       if (comment.length > 200) {
         return;
       }
-     
-      
       try {
-        const response = await fetch('/api/comment/create', {
+        const res = await fetch('/api/comment/create', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             content: comment,
-            postId: postId,
-            userId: currentUser._id, // Assuming currentUser._id is defined
+            postId,
+            userId: currentUser._id,
           }),
         });
-  
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Failed to create comment:', errorData.message);
-        } else {
-          console.log('Comment created successfully');
-          setComment(''); 
-          setCommentError(null)
+        const data = await res.json();
+        if (res.ok) {
+          setComment('');
+          setCommentError(null);
+          setComments([data, ...comments]);
         }
       } catch (error) {
-        setCommentError('Error creating comment:', error);
-     
+        setCommentError(error.message);
       }
-      
     };
   
+  
 
+    useEffect(() => {
+      const getComments = async () => {
+        try {
+          const res = await fetch(`/api/comment/getPostComments/${postId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setComments(data);
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+      getComments();
+    }, [postId]);
+
+    const handleLike = async (commentId) => {
+      try {
+        if (!currentUser) {
+          navigate('/sign-in');
+          return;
+        }
+        const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+          method: 'PUT',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setComments(
+            comments.map((comment) =>
+              comment._id === commentId
+                ? {
+                    ...comment,
+                    likes: data.likes,
+                    numberOfLikes: data.likes.length,
+                  }
+                : comment
+            )
+          );
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    const handleEdit = async (comment, editedContent) => {
+      setComments(
+        comments.map((c) =>
+          c._id === comment._id ? { ...c, content: editedContent } : c
+        )
+      );
+    };
+
+    const handleDelete = async (commentId) => {
+      setShowModal(false);
+      try {
+        if (!currentUser) {
+          navigate('/sign-in');
+          return;
+        }
+        const res = await fetch(`/api/comment/deleteComment/${commentId}`, {
+          method: 'DELETE',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setComments(comments.filter((comment) => comment._id !== commentId));
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
@@ -77,6 +142,57 @@ const CommentSection = ({postId}) => {
             {commentError && <Alert color={'failure'} className='mt-5'>{commentError}</Alert>}
         </form>
       )}
+
+
+      {comments.length ===0 ?(
+        <p className='text-sm my-5'>No comments yet!</p>
+      ):(
+        <>
+         <div className='text-sm my-5 flex items-center gap-1'>
+            <p>Comments</p>
+            <div className='border border-gray-400 py-1 px-2 rounded-sm'>
+              <p>{comments.length}</p>
+            </div>
+          </div>
+          {comments.map((comment) => (
+            <Comment comment={comment} key={comment._id}
+            onLike={handleLike}
+            onEdit={handleEdit}
+            onDelete={(commentId) => {
+              setShowModal(true);
+              setCommentToDelete(commentId);
+            }}
+            />
+          ))}
+        </>
+      )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <ModalHeader />
+        <ModalBody>
+          <div className='text-center'>
+          <IoWarningOutline className='w-14 h-14 mb-5 mx-auto'/>
+            <h3 className='font-bold text-red-700'>
+              Are you sure you want to delete this comment?
+            </h3>
+            <div className='flex gap-3 items-center justify-center mt-5'>
+              <Button
+                className='flex-1' color={'failure'}
+                onClick={() => handleDelete(commentToDelete)}
+              >
+                Yes, I'm sure
+              </Button>
+              <Button className='flex-1' onClick={()=>setShowModal(false)} gradientDuoTone={'redToYellow'}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
     </div>
   )
 }
