@@ -3,7 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv'
 import  mongoose  from 'mongoose';
 import multer from 'multer';
-import cors from 'cors';
+
 
 import authRoutes from './routes/auth.route.js'
 import userRoutes from './routes/user.route.js'
@@ -18,8 +18,6 @@ import { create } from './controllers/post.controllers.js';
 
 dotenv.config();
 const app= express();
-
-
 
 //Mongo
 
@@ -36,13 +34,7 @@ app.listen(3000,()=>{
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors(
-  {
-    origin:["https://moory_blog.vercel.app"],
-    methods:[`GET`, `POST`],
-    credentials:true
-  }
-))
+
 
 
 //Multer
