@@ -4,8 +4,8 @@ import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
 
 export const signup=async(req,res ,next)=>{
-    const {username,email,password}=req.body;
-    const { filename } = req.file;
+    const {username,email,password , photoURL}=req.body;
+    
 
     if(!username || !email || !password || username==="" || email==="" || password===""){
         return next(errorHandler(400,'all fileds are required'));
@@ -13,11 +13,11 @@ export const signup=async(req,res ,next)=>{
 
     const hashPassword= bcryptjs.hashSync(password,10)
 
-    const newUser= new User({username,email,password:hashPassword ,photoURL:filename})
+    const newUser= new User({username,email,password:hashPassword ,photoURL})
 
     try {
         await newUser.save();
-        res.status(201).json({message:'user created' , filename })
+        res.status(201).json({message:'user created'  })
     } catch (error) {
         next(error);
     }

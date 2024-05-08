@@ -23,7 +23,7 @@ const DashProfile = () => {
     const handleImageChange = (e) => {
       const file = e.target.files[0];
       if (file) {
-        const imageUrl = URL.createObjectURL(file); // Define imageUrl within the if block
+        const imageUrl = URL.createObjectURL(file); 
         setImageFile(file);
         setImageFileURL(imageUrl);
     

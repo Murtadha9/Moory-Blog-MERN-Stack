@@ -3,9 +3,11 @@ import { Alert, Button, Label, Spinner, TextInput  } from 'flowbite-react';
 import React, { useRef, useState } from 'react';
 import { Link ,useNavigate } from 'react-router-dom';
 import AOuth from '../../Components/AOuth/AOuth';
+import { useSelector } from 'react-redux';
 
 const SignUp = () => {
 
+  const {currentUser } = useSelector((state) => state.user)
   const navigate=useNavigate();
   const filePicker=useRef()
   const [formData, setFormData] = useState({
@@ -17,18 +19,33 @@ const SignUp = () => {
 
   const [errorMessage,setErrorMessage] = useState(null);
   const [loading,setLoading] = useState(false);
+  const [imageFile ,setImageFile]=useState(null)
+  const [imageFileURL,setImageFileURL]=useState(null)
 
+  
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file); 
+      setImageFile(file);
+      setImageFileURL(imageUrl);
+  
+      // Update formData.photoURL with the imageUrl
+      setFormData({ ...formData, photoURL: imageFileURL });
+    }
+  };
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim()});
   };
 
   const handleFileChange = (e) => {
     setFormData({ ...formData, photoURL: e.target.files[0] });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit1 = async (e) => {
     e.preventDefault();
-    if(!formData.username || !formData.password || !formData.email){
+    if(!formData.username || !formData.email || !formData.password  ){
       return setErrorMessage('all fileds are required');
     }
     const formDataToSend = new FormData();
@@ -42,7 +59,7 @@ const SignUp = () => {
       setErrorMessage(null);
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
-        body:formDataToSend,
+        body:JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -55,6 +72,33 @@ const SignUp = () => {
       if(res.ok)(
         navigate('/signin')
       )
+    } catch (error) {
+      setErrorMessage(error.message);
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage('Please fill out all fields.');
+    }
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        return setErrorMessage(data.message);
+      }
+      setLoading(false);
+      if(res.ok) {
+        navigate('/signin');
+      }
     } catch (error) {
       setErrorMessage(error.message);
       setLoading(false);
@@ -81,22 +125,26 @@ const SignUp = () => {
         {/*right*/}
         <div className='flex-1'>
           <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-           
-            <div>
-              <img src="" alt="" onClick={()=>filePicker.current.click()}/>
-              <input type='file' id='photoURL' onChange={handleFileChange} ref={filePicker}  />
+          <h1 className='mx-auto text-2xl'>Sign up</h1>
+          <input type='file' accept='image/*' id='photoURL' onChange={handleImageChange} hidden ref={filePicker}  />
+            <div className='w-32 h-32 bg-slate-500 self-center cursor-pointer shadow-md shadow-red-400 rounded-full overflow-hidden' onClick={()=>filePicker.current.click()} >
+              <img src={imageFileURL } alt="" />
             </div>
+
+
             <div>
               <Label value='Username' />
               <TextInput type='text' id='username' onChange={handleChange} />
             </div>
-            <div>
-              <Label value='Password' />
-              <TextInput type='password' id='password' onChange={handleChange} />
-            </div>
+           
             <div>
               <Label value='Email' />
               <TextInput type='email' id='email' onChange={handleChange} />
+            </div>
+
+            <div>
+              <Label value='Password' />
+              <TextInput type='password' id='password' onChange={handleChange} />
             </div>
             <Button gradientDuoTone={'redToYellow'} type='submit' disabled={loading}>
              {loading ?(

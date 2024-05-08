@@ -25,18 +25,18 @@ const FooterCom = () => {
               <FooterTitle title='About' />
               <FooterLinkGroup col>
                 <FooterLink
-                  href='https://www.100jsprojects.com'
+                  href='https://github.com/Murtadha9'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  100 JS Projects
+                  Mr.Moory's GitHub
                 </FooterLink>
                 <FooterLink
                   href='/about'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  Sahand's Blog
+                 Mooory Blog
                 </FooterLink>
               </FooterLinkGroup>
             </div>
@@ -66,14 +66,14 @@ const FooterCom = () => {
         <div className='w-full sm:flex sm:items-center sm:justify-between'>
           <FooterCopyright
             href='#'
-            by="Sahand's blog"
-            year={new Date().getFullYear()}
+            by="Moory Blog"
+            year={2024}
           />
           <div className="flex gap-6 sm:mt-0 mt-4 sm:justify-center">
             <FooterIcon href='#' icon={BsFacebook}/>
             <FooterIcon href='#' icon={BsInstagram}/>
             <FooterIcon href='#' icon={BsTwitter}/>
-            <FooterIcon href='https://github.com/sahandghavidel' icon={BsGithub}/>
+            <FooterIcon href='https://github.com/Murtadha9' target='_blank' icon={BsGithub}/>
             <FooterIcon href='#' icon={BsDribbble}/>
 
           </div>

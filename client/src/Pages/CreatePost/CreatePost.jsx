@@ -64,10 +64,10 @@ const CreatePost = () => {
             <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e)=>setFormData({...formData,title:e.target.value})}/>
             <Select onChange={(e)=>setFormData({...formData,category:e.target.value})}>
                 <option value={'uncategorized'}>Select a Category</option>
-                <option value={'javaScript'}>javaScript</option>
-                <option value={'NextJs'}>NextJs</option>
-                <option value={'ReactJs'}>ReactJs</option>
-                <option value={'ReactNative'}>React Native</option>
+                <option value='reactjs'>React.js</option>
+                <option value='nextjs'>Next.js</option>
+                <option value='javascript'>JavaScript</option>
+                <option value='reactnative'>React Native</option>
             </Select>
         </div>
         <div className='flex  items-center justify-center  border-4 border-red-400 p-4'>
