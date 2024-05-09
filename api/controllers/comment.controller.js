@@ -8,7 +8,7 @@ export const createComment = async (req, res, next) => {
   try {
     const { content, postId, userId } = req.body;
 
-    // Validate required fields
+    
     if (!postId || !content || !userId) {
       return next(errorHandler(400, 'Missing required fields (postId, content, userId)'));
     }
@@ -20,10 +20,10 @@ export const createComment = async (req, res, next) => {
     });
 
     const comment = await newComment.save();
-    res.status(201).json(comment); // Respond with 201 Created on success
+    res.status(201).json(comment);
   } catch (error) {
     console.error('Error creating comment:', error);
-    next(error); // Pass the error to the error-handling middleware
+    next(error); 
   }
 };
 
@@ -115,7 +115,9 @@ export const getcomments = async (req, res, next) => {
       .sort({ createdAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
+
     const totalComments = await Comment.countDocuments();
+    
     const now = new Date();
     const oneMonthAgo = new Date(
       now.getFullYear(),
