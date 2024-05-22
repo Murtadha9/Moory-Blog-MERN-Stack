@@ -19,7 +19,7 @@ const CallToAction = () => {
             </Button>
         </div>
         <div className="p-7 flex-1">
-            <img src='MrFrog-1.jpg' className='w-96 h-96 rounded-xl object-cover'/>
+            <img src='../../../public/MrFrog-1.jpg' className='w-96 h-96 rounded-xl object-cover'/>
         </div>
     </div>
   )

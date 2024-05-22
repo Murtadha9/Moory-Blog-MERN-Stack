@@ -2,7 +2,7 @@
 import express from 'express';
 import dotenv from 'dotenv'
 import  mongoose  from 'mongoose';
-import multer from 'multer';
+
 
 
 import authRoutes from './routes/auth.route.js'
@@ -11,10 +11,10 @@ import postRoutes from './routes/post.route.js'
 import commentRoutes from './routes/comment.route.js'
 
 import cookieParser from 'cookie-parser'
-import { signup } from './controllers/auth.controller.js';
-import { verifyToken } from './utils/verifyUser.js';
-import { updateUser } from './controllers/user.controller.js';
-import { create } from './controllers/post.controllers.js';
+//import { signup } from './controllers/auth.controller.js';
+//import { verifyToken } from './utils/verifyUser.js';
+//import { updateUser } from './controllers/user.controller.js';
+//import { create } from './controllers/post.controllers.js';
 
 dotenv.config();
 const app= express();
@@ -37,24 +37,15 @@ app.use(cookieParser())
 
 
 
-//Multer
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-      cb(null, 'uploads/'); // Uploads will be stored in 'uploads/' directory
-    },
-    filename: function(req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname);
-    }
-  });
-  const upload = multer({ storage: storage });
+
 
 
 
 
 //Endpoints with files
-app.post('/api/auth/signup' , upload.single('photoURL'), signup)
-app.put('/api/users/update/:userId', upload.single('photoURL') , verifyToken , updateUser)
-app.post('/api/posts/create', upload.single('photoURL') , verifyToken ,create)
+//app.post('/api/auth/signup' , upload.single('photoURL'), signup)
+//app.put('/api/users/update/:userId', upload.single('photoURL') , verifyToken , updateUser)
+//app.post('/api/posts/create', upload.single('photoURL') , verifyToken ,create)
 
 
 //EndPoints
