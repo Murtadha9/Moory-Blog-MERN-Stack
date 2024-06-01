@@ -2,8 +2,6 @@
 
 MongoBD , Express , Reactjs , Nodejs
 
-Live [here](https://moory-blog-mern-stack-pb6z.vercel.app/)
-
 
 ![b4](https://github.com/Murtadha9/Moory-Blog-MERN-Stack/assets/138989987/ab11a4a2-aed8-4126-8ad1-58a5267b0035)
 
